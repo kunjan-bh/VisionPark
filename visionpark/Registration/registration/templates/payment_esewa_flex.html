@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>VisionPark | Book</title>
+	<link rel="icon" type="image/png" href="../static/input/favicon.png">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Acme&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+	{% comment %} <link rel="stylesheet" href="{% static 'css/head.css' %}"> {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
+</head>
+<body>
+	<div id="wrapper">
+		<header class="header-desk">
+			<div class="container">
+				<div class="logo">
+					<a href='{% url "home" %}'><img src="{% static 'images/logo.svg' %}" alt="logo"></a>
+				</div>
+				<nav class="navigation">
+					<ul>
+						{% if user.is_authenticated %}
+                            <li><span class='hitag'>Hi, {{ user.username }}</span></li>
+                        {% endif %}
+						<li class='hi_list'><a href='{% url "about" %}'>About Us</a></li>
+						<li class='hi_list'><a href='{% url "book" %}'>Booking</a></li>
+						<li class='hi_list'><a href='{% url "contact" %}'>Contacts</a></li>
+						{% if user.is_authenticated %}
+                            <li class='hi_list'><a href='{% url "logout" %}'>Log Out</a></li>
+                        {% endif %}
+					</ul>
+					<div class="book-btnn">
+						<span class="book-btn-container">
+							<a href='{% url "book" %}' class="book-button">
+								<span class="btnInner">Book Now</span>
+							</a>
+						</span>
+					</div>
+					<div class="menu-box">
+						<a href="#menu" id="showmenu"></a>
+						<div id="menu" class="menu">
+							<a href="#showmenu" class="menu-background"></a>
+							<div class="menu-content">
+								<div class="menu-logo">
+									<img src="{% static 'images/logo-white.png' %}" alt="logo">
+									<span class="name-title">VisionPark</span>
+								</div>
+								<div>
+									<ul>
+										<li><a href='{% url "home" %}'>Home</a></li>
+										<li><a href='{% url "about" %}'>About us</a></li>
+										<li><a href='{% url "contact" %}'>Contacts</a></li>
+										<li><a href='{% url "book" %}'>Book now! 
+											<svg class="pl" width="10" height="10" viewBox="0 0 240 240">
+												<circle class="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
+												<circle class="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
+												<circle class="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+												<circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+											</svg></a></li>
+										{% if user.is_authenticated %}
+											<li><a href='{% url "logout" %}'>Log Out</a></li>
+										{% endif %}
+									</ul>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</header>
+        <main class='main-extend-success'>  
+            <div class ="container-success">
+                
+                <div class="confirmation-box">
+                        <h1>Payment Via Esewa</h1>
+                        <p>Thank you!</p>
+                        <form method="POST" action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" id="bookingForm" onsubmit='transaction_id()'>
+                            {% csrf_token %}
+                            <input type="hidden" id="amount" name="amount" value="30" required>
+                            <input type="hidden" id="tax_amount" name="tax_amount" value ="0" required>
+                            <input type="hidden" id="total_amount" name="total_amount" value="30" required>
+                            <input type="hidden" id="transaction_uuid" name="transaction_uuid" value="241028" required>
+                            <input type="hidden" id="product_code" name="product_code" value ="EPAYTEST" required>
+                            <input type="hidden" id="product_service_charge" name="product_service_charge" value="0" required>
+                            <input type="hidden" id="product_delivery_charge" name="product_delivery_charge" value="0" required>
+                            <input type="hidden" id="success_url" name="success_url" value="http://127.0.0.1:8000/esewa-paymentflex?full_name={{ fullname }}&location={{ location }}&slot={{ slot }}&start_time={{ start_time }}&bookingid={{ booking_iid }}&userid={{ user_id }}&total={{ total }}" required>
+                            <input type="hidden" id="failure_url" name="failure_url" value="http://127.0.0.1:8000/payment-fail" required>
+                            <input type="hidden" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required>
+                            <input type="hidden" id="signature" name="signature" value="i94zsd3oXF6ZsSr/kGqT4sSzYQzjj1W/waxjWyRwaME=" required>
+                            <input value="Pay via Esewa" type="submit">
+                        </form>
+                </div>
+                
+            </div>
+        </main>
+        <script>
+            const hours = {{ total }};
+            const ratePerHour = 30; 
+            const totalAmount = hours * ratePerHour;
+            document.getElementById('amount').value = totalAmount;
+            document.getElementById('total_amount').value = totalAmount;
+            function transaction_id(){
+                
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';///transaction_uuid page reload huda pani diff hunu paryo tesaile total amount update hour ko selction ma xa ani uuid and all variable dependent to that changes in onsubmit function
+                let result = '';
+                let length = 6;
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * characters.length);
+                    result += characters[randomIndex];
+                }
+                document.getElementById('transaction_uuid').value = result; 
+                
+                
+                const uuid = document.getElementById("transaction_uuid").value;
+                const pro_code = document.getElementById("product_code").value;
+                const totalAmount1 = document.getElementById("amount").value;
+                const secretKey = "8gBm/:&EnhH.1/q";
+                const message = `total_amount=${totalAmount1},transaction_uuid=${uuid},product_code=${pro_code}`;
+                //document.getElementById('signed_field_names').value = final_send;
+                // Generate HMAC SHA256 hash
+                const hash = CryptoJS.HmacSHA256(message, secretKey);
+                const hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
+                document.getElementById("signature").value = hashInBase64;
+            
+            }
+        </script>
+        <footer>
+			<div class="footer">
+				<div class="footer-logo">
+					<img src="{% static 'images/logo.png' %}" alt="VisionPark Logo">
+					<p>VisionPark</p>
+					<span>Your Parking Made Easier</span>
+				</div>
+				<div class="footer-services">
+					<h3>Our Services</h3>
+					<ul>
+						<li>Book now</li>
+						<li>About Us</li>
+						<li>Home</li>
+						<li>Services</li>
+					</ul>
+				</div>
+				<div class="footer-contact">
+					<h3>Contact Us</h3>
+					<p>Phone: 9841036802</p>
+					<p>Email: bhattakunjan10@gmail.com</p>
+					<h3>Follow Us</h3>
+					<div class="footer-social">
+						<a href="https://www.linkedin.com/in/kunjan-bhatt/"><img src="{% static 'images/linked-in.svg' %}" alt="LinkedIn"></a>
+						<a href="https://www.facebook.com/profile.php?id=100095174284391"><img src="{% static 'images/facebook.svg' %}" alt="Facebook"></a>
+					</div>
+				</div>
+			</div>
+			<div class="footer-sub">
+				<span>Copyright © 2024 VisionPark</span>
+			</div>
+		</footer>
+    </div>
+</body>
+</html>

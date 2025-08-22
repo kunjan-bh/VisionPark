@@ -1,0 +1,8 @@
+langchain==0.0.196
+langchain-google-genai==0.0.5  # Make sure you have the correct version
+faiss-cpu
+flask
+flask-cors
+pypdf
+PyPDFLoader
+python-dotenv

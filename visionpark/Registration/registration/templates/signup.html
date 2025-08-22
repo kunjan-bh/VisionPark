@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+</head>
+<body>
+    <div class="login">
+        <img src="{% static 'images/login-bg.jpg' %}" alt="login image" class="login__img" id='signup_bg'>
+
+        <form action="#" id='signupform' method='POST' class="container">
+            {% csrf_token %}
+            <h1 class="login__title">Sign up</h1>
+
+            <div class="login__content">
+                <div class="login-block">
+                    <div class="login__box">
+                        {% comment %} <i class="ri-user-3-line login__icon"></i> {% endcomment %}
+
+                        <div class="login__box-input">
+                            <input type="text" required class="login__input" name= 'fullname' placeholder=" ">
+                            <label for="login-email" class="login__label">Fullname</label>
+                        </div>
+                    </div>
+                    <div class="login__box">
+                        {% comment %} <i class="ri-user-3-line login__icon"></i> {% endcomment %}
+
+                        <div class="login__box-input">
+                            <input type="tel" required class="login__input" name= 'phone' placeholder=" " pattern="[0-9]{10}" title="Please enter a 10-digit phone number">
+                            <label for="login-email" class="login__label">Phone No.</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="login__box">
+                    {% comment %} <i class="ri-user-3-line login__icon"></i> {% endcomment %}
+
+                    <div class="login__box-input">
+                        <input type="text" required class="login__input" name= 'username' placeholder=" ">
+                        <label for="login-email" class="login__label">Enter your username</label>
+                    </div>
+                </div>
+                <div class="login__box">
+                    {% comment %} <i class="ri-user-3-line login__icon"></i> {% endcomment %}
+
+                    <div class="login__box-input">
+                        <input type="email" class="login__input" name= 'email' id="login-email" placeholder=" ">
+                        <label for="login-email" class="login__label" id= "email_label">Enter your email</label>
+                        <div id="error" style="color: red;"></div>
+                    </div>
+                </div>
+
+                <div class="login__box">
+                    {% comment %} <i class="ri-lock-2-line login__icon"></i> {% endcomment %}
+
+                    <div class="login__box-input">
+                        <input type="password" required class="login__input" name='password' id="login-pass" placeholder=" ">
+                        <label for="login-pass" class="login__label">Create a password</label>
+                        <i class="ri-eye-off-line login__eye" id="login-eye"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="login__check">
+                <div class="login__check-group">
+                   <input type="checkbox" class="login__check-input" id="login-check">
+                   <label for="login-check" class="login__check-label">Remember me</label>
+                </div>
+
+                
+            </div>
+
+            <button type="submit" class="login__button">Sign up</button>
+
+            <p class="login__register">
+               Already have an account? <a href='{% url "login" %}'>login</a>
+            </p>
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signupform');
+            const emailInput = document.getElementById('login-email');
+            const errorDiv = document.getElementById('error');
+        
+            form.addEventListener('submit', function(event) {
+                const emailValue = emailInput.value.trim();
+                
+                // Clear previous error message
+                errorDiv.textContent = '';
+        
+                // Check if email ends with @gmail.com
+                if (!emailValue.endsWith('@gmail.com')) {
+                    event.preventDefault(); // Prevent form submission
+                    errorDiv.textContent = 'Please enter a valid Gmail address.';
+                } else {
+                    // Log the email if it's valid
+                    console.log('Email submitted:', emailValue);
+                    // Allow the form to submit
+                    // You can remove the comment below if you want to submit
+                    // form.submit(); 
+                }
+            });
+        
+            // Reset error message when the user starts typing
+            emailInput.addEventListener('input', function() {
+                errorDiv.textContent = '';
+            });
+        });
+        
+        
+    </script>
+</body>
+</html>
